@@ -10,10 +10,12 @@ namespace QuickAdd
         [STAThread]
         private static void Main(string[] args)
         {
-            if (args.Length > 0 && args[0].TrimStart('-', '/').ToLowerInvariant() == "install-dock")
+            if (args.Length > 0)
             {
-                InstallDockFromCommandLine();
-                return;
+                string verb = args[0].TrimStart('-', '/').ToLowerInvariant();
+                bool quiet = args.Length > 1 && args[1].TrimStart('-', '/').ToLowerInvariant() == "quiet";
+                if (verb == "install-dock") { DockCommand(false, quiet); return; }
+                if (verb == "remove-dock" || verb == "uninstall") { DockCommand(true, quiet); return; }
             }
 
             bool created;
@@ -50,18 +52,33 @@ namespace QuickAdd
             }
         }
 
-        /// <summary>NexusQuickAdd.exe --install-dock : put the tool on the dock and exit.</summary>
-        private static void InstallDockFromCommandLine()
+        /// <summary>NexusQuickAdd.exe --install-dock [quiet] | --remove-dock [quiet]</summary>
+        private static void DockCommand(bool remove, bool quiet)
         {
             Config config = Config.Load();
             NexusEnv.Initialize(config);
-            ApplyResult result = NexusDock.InstallSelf();
+            ApplyResult result = remove ? NexusDock.RemoveSelf() : NexusDock.InstallSelf();
+
             string message;
             int code;
             if (!string.IsNullOrEmpty(result.Error))
             {
-                message = result.Error;
-                code = 1;
+                // "nothing to remove" is a success for the uninstaller
+                if (remove && result.Error.IndexOf("无需移除", StringComparison.Ordinal) >= 0)
+                {
+                    message = result.Error;
+                    code = 0;
+                }
+                else
+                {
+                    message = result.Error;
+                    code = 1;
+                }
+            }
+            else if (remove)
+            {
+                message = "已从停靠栏移除「" + AppInfo.DockLabel + "」。";
+                code = 0;
             }
             else if (result.Added == 0)
             {
@@ -75,9 +92,10 @@ namespace QuickAdd
                     result.Restarted ? (result.Verified ? "，Nexus 已重启。" : "，Nexus 正在重启。") : "，下次启动 Nexus 生效。");
                 code = 0;
             }
+
             AttachConsole(-1);
             Console.WriteLine(message);
-            if (Environment.UserInteractive && !HasConsole())
+            if (!quiet && Environment.UserInteractive && !HasConsole())
                 MessageBox.Show(message, AppInfo.Name, MessageBoxButton.OK, MessageBoxImage.Information);
             Environment.Exit(code);
         }
@@ -88,7 +106,8 @@ namespace QuickAdd
             {
                 string file = System.IO.Path.Combine(NexusEnv.DataDir, "crash.log");
                 System.IO.File.AppendAllText(file,
-                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + (ex == null ? "(unknown)" : ex.ToString()) + Environment.NewLine + Environment.NewLine);
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine +
+                    (ex == null ? "(unknown)" : ex.ToString()) + Environment.NewLine + Environment.NewLine);
             }
             catch { }
         }

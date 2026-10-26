@@ -13,3 +13,6 @@ shots/
 *.user
 Thumbs.db
 desktop.ini
+
+# vendor installer used only for local -Full builds
+assets/nexus-setup.exe

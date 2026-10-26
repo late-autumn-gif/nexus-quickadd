@@ -7,7 +7,7 @@ namespace QuickAdd
     {
         public const string Name = "Nexus 速添";
         public const string EnglishName = "Nexus QuickAdd";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
         public const string RepoUrl = "https://github.com/late-autumn-gif/nexus-quickadd";
         public const string DockLabel = "速添";
     }

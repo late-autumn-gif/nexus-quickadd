@@ -174,6 +174,81 @@ namespace QuickAdd
             return Apply(new List<Entry> { e });
         }
 
+        /// <summary>Removes this tool's own icon from the dock (used by the installer / uninstaller).</summary>
+        public static ApplyResult RemoveSelf()
+        {
+            string self = Normalize(SelfPath);
+            var targets = new List<int>();
+            foreach (DockItem it in Read())
+            {
+                if (Normalize(it.Path) == self) { targets.Add(it.Index); continue; }
+                if (it.Path.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        string target, args, work;
+                        Native.ReadShortcut(it.Path, out target, out args, out work);
+                        if (Normalize(target) == self) targets.Add(it.Index);
+                    }
+                    catch { }
+                }
+            }
+            if (targets.Count == 0) return Error("停靠栏里没有「" + AppInfo.DockLabel + "」，无需移除");
+            return RemoveAt(targets.ToArray());
+        }
+
+        /// <summary>Deletes the given item indexes and compacts the remaining list (indexes must stay contiguous).</summary>
+        public static ApplyResult RemoveAt(int[] indexes)
+        {
+            var result = new ApplyResult();
+            if (!NexusEnv.Found) { result.Error = "没有找到 Winstep Nexus"; return result; }
+
+            bool wasRunning = IsRunning;
+            try { result.Backup = Backup(); }
+            catch (Exception ex) { result.Error = "备份失败，已取消写入：" + ex.Message; return result; }
+
+            var drop = new HashSet<int>(indexes);
+            try
+            {
+                if (wasRunning)
+                {
+                    Stop();
+                    if (IsRunning) { result.Error = "无法结束 Nexus 进程，改动未写入"; return result; }
+                }
+
+                List<DockItem> items = Read();
+                using (RegistryKey k = Registry.CurrentUser.CreateSubKey(KeyPath))
+                {
+                    if (k == null) { result.Error = "无法打开 Nexus 注册表配置"; return result; }
+                    foreach (string name in k.GetValueNames())
+                        if (System.Text.RegularExpressions.Regex.IsMatch(name, "^1(Path|Label|Type|StartPath|Hotkey|Args)\\d+$"))
+                            k.DeleteValue(name, false);
+
+                    int next = 0;
+                    foreach (DockItem it in items)
+                    {
+                        if (drop.Contains(it.Index)) { result.Notes.Add("removed [" + it.Index + "] " + it.Label); continue; }
+                        k.SetValue("1Path" + next, it.Path, RegistryValueKind.String);
+                        k.SetValue("1Label" + next, it.Label, RegistryValueKind.String);
+                        k.SetValue("1Type" + next, "1", RegistryValueKind.String);
+                        if (!string.IsNullOrEmpty(it.StartPath))
+                            k.SetValue("1StartPath" + next, it.StartPath, RegistryValueKind.String);
+                        next++;
+                    }
+                    k.SetValue(NoItemsValue, (next - 1).ToString(), RegistryValueKind.String);
+                }
+            }
+            catch (Exception ex) { result.Error = "写入失败：" + ex.Message; }
+            finally
+            {
+                if (wasRunning)
+                {
+                    try { Start(); result.Restarted = true; result.Verified = WaitForDock(20000); }
+                    catch (Exception ex) { result.Notes.Add("重启 Nexus 失败：" + ex.Message); }
+                }
+            }
+            return result;
+        }
         private static ApplyResult Error(string message)
         {
             var r = new ApplyResult();

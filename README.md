@@ -8,7 +8,7 @@
 
 ![停靠栏里的速添](assets/screenshot-dock.png)
 
-- 单文件 exe，**不需要安装**，双击即用
+- 绿色版单文件 exe 双击即用；也可以一键安装器装好
 - 自动找到 Nexus 的安装位置（注册表 / 进程 / 常见路径），在别人的机器上也能直接用
 - 首次启动自动索引开始菜单、注册表、商店应用、Steam 和磁盘上的绿色软件
 - 一键把「速添」加进停靠栏；也能一次挑多个程序，批量加进去
@@ -17,9 +17,17 @@
 
 ## 下载与使用
 
-1. 到 [Releases](../../releases) 下载 `NexusQuickAdd.exe`（Windows 7 SP1 及以上，需 .NET Framework 4.0+，Win10/11 自带）。
-2. 确认已经安装并运行 Winstep Nexus。
-3. 双击 exe，窗口顶部会出现「把「速添」固定到停靠栏」——点一下就完成整合；以后从停靠栏图标打开即可。
+到 [Releases](../../releases) 选一个：
+
+| 文件 | 大小 | 说明 |
+| --- | --- | --- |
+| **NexusQuickAdd-Setup-Full.exe** | ~42 MB | **推荐**。里面已经打包了 Winstep 官方 Nexus 安装包：没装 Nexus 的机器也能一次装完——运行 → 自动静默装好 Nexus → 装上速添 → 直接写进停靠栏 → 启动 Nexus。全程一个窗口，点一次。 |
+| NexusQuickAdd-Setup.exe | ~140 KB | 同样的一键流程，但 Nexus 安装包是运行时从 winstep.net 下载（适合已经有 Nexus、或想省流量的人）。 |
+| NexusQuickAdd.exe | ~90 KB | 绿色单文件。不想装、只想临时用，双击就能搜索并添加。 |
+
+装完的样子：Nexus 停靠栏里多一个蓝色放大镜图标「速添」，点它就打开搜索窗口——和 Nexus 自带功能没有区别。卸载走「设置 → 应用」里的 Nexus 速添，或运行安装器点「卸载」，Nexus 本身不会被卸载。
+
+> Setup-Full 里包含 Winstep 的官方安装包，只在你确认拥有再分发授权时对外发布；不想涉及这一点就用 `NexusQuickAdd-Setup.exe`（联网版，效果一样）。
 
 ### 操作
 
@@ -93,7 +101,10 @@ src\Native.cs       快捷键、图标、快捷方式 COM
 ui\main.xaml        界面（运行期解析，内嵌进 exe）
 ```
 
-CI：`.github/workflows/build.yml` 在 push / PR 时构建 exe 并上传产物；发布用仓库里的 `publish.ps1`（或 GitHub Releases 页面手动上传 `dist\NexusQuickAdd.exe`）。
+构建产物：`dist\NexusQuickAdd.exe`（工具）、`dist\NexusQuickAdd-Setup.exe`（联网安装器）。
+想做离线整合版（把官方 Nexus 安装包一起打进去）：把 `NexusSetup.exe` 放到 `assets\nexus-setup.exe`，然后 `build.ps1 -Full`（该文件已被 .gitignore 排除，不会进仓库）。
+
+CI：`.github/workflows/build.yml` 在 push / PR 时构建工具与安装器并上传产物；发布用仓库里的 `publish.ps1`。
 
 ## 已知限制
 

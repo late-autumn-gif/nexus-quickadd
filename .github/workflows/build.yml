@@ -25,6 +25,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force out | Out-Null
           Copy-Item dist/NexusQuickAdd.exe out/
+          Copy-Item dist/NexusQuickAdd-Setup.exe out/
           Copy-Item README.md, LICENSE, CHANGELOG.md out/
           Compress-Archive -Path out/* -DestinationPath NexusQuickAdd-win-x64.zip -Force
           Get-ChildItem dist/NexusQuickAdd.exe, NexusQuickAdd-win-x64.zip | Select-Object Name, Length
@@ -34,4 +35,5 @@ jobs:
           name: NexusQuickAdd
           path: |
             dist/NexusQuickAdd.exe
+            dist/NexusQuickAdd-Setup.exe
             NexusQuickAdd-win-x64.zip
