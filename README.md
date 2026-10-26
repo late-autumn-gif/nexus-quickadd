@@ -93,7 +93,7 @@ src\Native.cs       快捷键、图标、快捷方式 COM
 ui\main.xaml        界面（运行期解析，内嵌进 exe）
 ```
 
-CI：`.github/workflows/build.yml` 在 push / PR 时构建并上传产物，打 `v*` 标签时自动生成 Release。
+CI：`.github/workflows/build.yml` 在 push / PR 时构建 exe 并上传产物；发布用仓库里的 `publish.ps1`（或 GitHub Releases 页面手动上传 `dist\NexusQuickAdd.exe`）。
 
 ## 已知限制
 
