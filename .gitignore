@@ -1,0 +1,15 @@
+# build output
+dist/
+out/
+*.zip
+
+# dev helpers and scratch screenshots (absolute paths, not for release)
+tools/
+shots/
+
+# IDE / OS
+.vs/
+.idea/
+*.user
+Thumbs.db
+desktop.ini

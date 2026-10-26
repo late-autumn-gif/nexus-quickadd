@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Margin="20">
+  <Grid.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+    <Style TargetType="ScrollBar">
+      <Setter Property="Width" Value="10"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ScrollBar">
+            <Grid Background="Transparent">
+              <Track x:Name="PART_Track" IsDirectionReversed="True">
+                <Track.DecreaseRepeatButton>
+                  <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="False"/>
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                  <Thumb>
+                    <Thumb.Template>
+                      <ControlTemplate TargetType="Thumb">
+                        <Border Background="#D7DDE8" CornerRadius="3" Margin="2,1"/>
+                      </ControlTemplate>
+                    </Thumb.Template>
+                  </Thumb>
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                  <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="False"/>
+                </Track.IncreaseRepeatButton>
+              </Track>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="RowItem" TargetType="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ListBoxItem">
+            <Border x:Name="Bg" Background="Transparent" CornerRadius="10" Margin="6,2" SnapsToDevicePixels="True">
+              <ContentPresenter/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#F6F8FB"/>
+              </Trigger>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#EFF6FF"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="SecondaryButton" TargetType="Button">
+      <Setter Property="Foreground" Value="#2563EB"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bg" Background="#FFFFFF" BorderBrush="#BBD3FF" BorderThickness="1"
+                    CornerRadius="8" Padding="12,6">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#E8F1FF"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#D7E6FF"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Bg" Property="Background" Value="#F3F5F9"/>
+                <Setter Property="Foreground" Value="#AEB7C6"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="HintButton" TargetType="Button">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Opacity" Value="0"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="8" Padding="11,6">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#E3ECFB"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="PrimaryButton" TargetType="Button">
+      <Setter Property="Foreground" Value="#FFFFFF"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bg" Background="#2563EB" CornerRadius="10" Padding="18,9">
+              <Border.Effect>
+                <DropShadowEffect BlurRadius="14" ShadowDepth="2" Opacity="0.28" Color="#2563EB"/>
+              </Border.Effect>
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#1D4ED8"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#1E40AF"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Bg" Property="Background" Value="#C7D2E5"/>
+                <Setter TargetName="Bg" Property="Effect" Value="{x:Null}"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="IconButton" TargetType="Button">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bg" Background="Transparent" CornerRadius="8" Width="30" Height="30">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Bg" Property="Background" Value="#F3F5F9"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Grid.Resources>
+
+  <!-- window card -->
+  <Border x:Name="Root" Background="#FFFFFF" CornerRadius="16" BorderBrush="#E7EAF0" BorderThickness="1">
+    <Border.Effect>
+      <DropShadowEffect BlurRadius="30" ShadowDepth="8" Opacity="0.18" Color="#0F172A"/>
+    </Border.Effect>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <!-- header -->
+      <Grid x:Name="HeaderBar" Height="58" Background="Transparent">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+          <Border Width="30" Height="30" CornerRadius="9">
+            <Border.Background>
+              <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#3B82F6" Offset="0"/>
+                <GradientStop Color="#1D4ED8" Offset="1"/>
+              </LinearGradientBrush>
+            </Border.Background>
+            <Viewbox Width="15" Height="15" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <Path Data="M 6.5,1.2 A 5.3,5.3 0 1 0 6.5,11.8 A 5.3,5.3 0 1 0 6.5,1.2 M 10.6,10.6 L 15,15"
+                    Stroke="#FFFFFF" StrokeThickness="1.9" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+            </Viewbox>
+          </Border>
+          <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="Nexus 速添" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A"/>
+            <TextBlock Text="搜索程序名，定位启动目录，直接加入停靠栏" FontSize="11.5" Foreground="#98A2B3" Margin="0,2,0,0"/>
+          </StackPanel>
+        </StackPanel>
+        <Button x:Name="CloseButton" Style="{StaticResource IconButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" ToolTip="关闭（Esc）">
+          <Path Data="M 0,0 L 10,10 M 10,0 L 0,10" Stroke="#8A94A6" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+        </Button>
+      </Grid>
+
+      <!-- search -->
+      <Border x:Name="SearchBorder" Grid.Row="1" Margin="20,0,20,12" Height="46" CornerRadius="12"
+              Background="#F7F9FC" BorderBrush="#E7EAF0" BorderThickness="1.4">
+        <Grid>
+          <Path Data="M 1,7 A 6,6 0 1 1 13,7 A 6,6 0 1 1 1,7 M 12,12 L 16,16" Stroke="#9AA4B5" StrokeThickness="1.7"
+                StrokeStartLineCap="Round" StrokeEndLineCap="Round" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
+          <TextBox x:Name="SearchBox" Margin="42,0,42,0" VerticalAlignment="Center" FontSize="14.5"
+                   Foreground="#0F172A" Background="Transparent" BorderThickness="0" CaretBrush="#2563EB"
+                   Text="" IsUndoEnabled="True" SpellCheck.IsEnabled="False"/>
+          <TextBlock x:Name="PlaceholderText" Text="输入程序名称、拼音首字母或路径…" FontSize="14.5" Foreground="#AEB7C6"
+                     VerticalAlignment="Center" Margin="42,0,0,0" IsHitTestVisible="False"/>
+          <TextBlock Text="Ctrl+Alt+N" FontSize="11" Foreground="#B6BECC" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,14,0"/>
+        </Grid>
+      </Border>
+
+      <!-- status line -->
+      <Grid Grid.Row="2" Margin="24,0,24,8">
+        <TextBlock x:Name="StatusText" Text="正在索引…" FontSize="11.5" Foreground="#98A2B3" VerticalAlignment="Center"/>
+        <TextBlock x:Name="ReindexLink" Text="重新索引" FontSize="11.5" Foreground="#2563EB" HorizontalAlignment="Right"
+                   VerticalAlignment="Center" Cursor="Hand"/>
+      </Grid>
+
+      <!-- dock integration banner -->
+      <Border x:Name="Banner" Grid.Row="3" Margin="20,0,20,10" CornerRadius="10" Background="#F4F8FF"
+              BorderBrush="#D7E6FF" BorderThickness="1" Visibility="Collapsed">
+        <Grid Height="44">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Path Grid.Column="0" Data="M 1,4 L 7,4 L 7,1 L 12,6 L 7,11 L 7,8 L 1,8 Z" Fill="#2563EB"
+                VerticalAlignment="Center" Margin="14,0,0,0" Opacity="0.9"/>
+          <TextBlock x:Name="BannerText" Grid.Column="1" Text="" FontSize="12" VerticalAlignment="Center"
+                     Margin="10,0,8,0" TextTrimming="CharacterEllipsis" Foreground="#2563EB"/>
+          <Button x:Name="InstallDockButton" Grid.Column="2" Style="{StaticResource SecondaryButton}"
+                  Content="加入停靠栏" VerticalAlignment="Center" Margin="0,0,6,0"/>
+          <Button x:Name="BannerCloseButton" Grid.Column="3" Style="{StaticResource IconButton}"
+                  VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="不再提示">
+            <Path Data="M 0,0 L 8,8 M 8,0 L 0,8" Stroke="#8A94A6" StrokeThickness="1.5"
+                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+          </Button>
+        </Grid>
+      </Border>
+
+      <!-- results -->
+      <Border Grid.Row="4" Margin="14,0,14,0" CornerRadius="12" Background="#FFFFFF">
+        <Grid>
+          <ListBox x:Name="ResultList" Background="Transparent" BorderThickness="0" ItemContainerStyle="{StaticResource RowItem}"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid x:Name="RowRoot" Height="62">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                  </Grid.ColumnDefinitions>
+
+                  <Border Width="34" Height="34" CornerRadius="9" Background="#F3F5F9" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Image Source="{Binding Icon}" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                  </Border>
+
+                  <StackPanel Grid.Column="1" Margin="13,0,10,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding SubLine}" FontSize="11.5" Foreground="#98A2B3" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                  </StackPanel>
+
+                  <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#F1F4F8" CornerRadius="6" Padding="7,2" Margin="0,0,6,0">
+                      <TextBlock Text="{Binding Source}" FontSize="10.5" Foreground="#6B7280"/>
+                    </Border>
+                    <Border Background="#E8F1FF" CornerRadius="6" Padding="7,2" Visibility="{Binding HasState, Converter={StaticResource BoolToVis}}">
+                      <TextBlock Text="{Binding StateText}" FontSize="10.5" Foreground="#2563EB" FontWeight="SemiBold"/>
+                    </Border>
+                  </StackPanel>
+
+                  <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="DirHint" Tag="dir" Style="{StaticResource HintButton}" Background="#F3F5F9" Margin="10,0,6,0">
+                      <StackPanel Orientation="Horizontal">
+                        <Path Data="M 1,2.5 L 5.5,2.5 L 6.8,4 L 12,4 M 1,2.5 L 1,11 L 12,11 L 12,4"
+                              Stroke="#6B7280" StrokeThickness="1.3" StrokeLineJoin="Round" VerticalAlignment="Center"/>
+                        <TextBlock Text="目录" FontSize="11.5" Foreground="#6B7280" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                      </StackPanel>
+                    </Button>
+                    <Button x:Name="AddHint" Tag="add" Style="{StaticResource HintButton}" Background="#EFF6FF" Margin="0,0,10,0">
+                      <TextBlock Text="添加" FontSize="11.5" Foreground="#2563EB" FontWeight="SemiBold"/>
+                    </Button>
+                  </StackPanel>
+                </Grid>
+                <DataTemplate.Triggers>
+                  <Trigger SourceName="RowRoot" Property="IsMouseOver" Value="True">
+                    <Setter TargetName="AddHint" Property="Opacity" Value="1"/>
+                    <Setter TargetName="DirHint" Property="Opacity" Value="1"/>
+                  </Trigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <TextBlock x:Name="EmptyHint" Text="没有匹配的程序" FontSize="13" Foreground="#AEB7C6"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+        </Grid>
+      </Border>
+
+      <!-- footer -->
+      <Grid Grid.Row="5" Height="66" Margin="24,0,20,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <TextBlock x:Name="FooterText" Text="待添加 0 项" FontSize="12" Foreground="#98A2B3" VerticalAlignment="Center"/>
+          <TextBlock Text="  ·  回车加入/取消队列，Ctrl+回车直接应用" FontSize="12" Foreground="#BFC6D2" VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <TextBlock x:Name="VersionText" Text="v1.0.0" FontSize="11" Foreground="#C3CAD6" VerticalAlignment="Center" Margin="0,0,14,0"/>
+          <Button x:Name="ApplyButton" Style="{StaticResource PrimaryButton}" Content="应用到 Nexus" IsEnabled="False"/>
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Border>
+
+  <!-- busy overlay -->
+  <Border x:Name="BusyOverlay" Background="#F2FFFFFF" CornerRadius="16" Visibility="Collapsed">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+      <ProgressBar IsIndeterminate="True" Width="180" Height="3" Foreground="#2563EB" Background="#E7EAF0" BorderThickness="0"/>
+      <TextBlock x:Name="BusyText" Text="正在应用…" FontSize="12.5" Foreground="#5B6472" HorizontalAlignment="Center" Margin="0,14,0,0"/>
+    </StackPanel>
+  </Border>
+
+  <!-- toast -->
+  <Border x:Name="ToastBorder" Background="#0F172A" CornerRadius="10" Padding="16,10" Opacity="0"
+          HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,88" IsHitTestVisible="False">
+    <TextBlock x:Name="ToastText" Text="" FontSize="12.5" Foreground="#FFFFFF"/>
+  </Border>
+</Grid>
