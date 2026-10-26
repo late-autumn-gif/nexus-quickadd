@@ -5,6 +5,11 @@ param(
 )
 # Build, commit, create the GitHub repo, push and publish a release.
 # Requires an authenticated GitHub CLI:  gh auth login
+#
+# 本机走代理时（例如 Clash 127.0.0.1:7897）：
+#   git config http.proxy  http://127.0.0.1:7897
+#   git config https.proxy http://127.0.0.1:7897
+#   $env:HTTPS_PROXY = 'http://127.0.0.1:7897'   # 上传 release 资产走这个
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 Set-Location $root
